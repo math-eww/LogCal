@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">LogCal</string>
+    <string name="app_version">0.01</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    //Day strings
+    <string name="today">TODAY</string>
+    <string name="tom">TOMORROW</string>
+    <string name="yest">YESTERDAY</string>
+    //Days of the week
+    <string name="mond">MONDAY</string>
+    <string name="tues">TUESDAY</string>
+    <string name="wedn">WEDNESDAY</string>
+    <string name="thur">THURSDAY</string>
+    <string name="frid">FRIDAY</string>
+    <string name="satu">SATURDAY</string>
+    <string name="sund">SUNDAY</string>
+
+</resources>

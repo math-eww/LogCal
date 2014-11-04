@@ -1,0 +1,179 @@
+<LinearLayout
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:measureWithLargestChild="false"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/linearLayout">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.5">
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="@string/today"
+            android:id="@+id/today"
+            android:layout_gravity="center_horizontal"
+            android:textAlignment="center"
+            android:gravity="center_horizontal" />
+
+        <ListView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/todayItems" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:measureWithLargestChild="false"
+        android:id="@+id/twoDayHoriz"
+        android:layout_weight="0.3">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="0.5">
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="@string/tom"
+                android:id="@+id/tomorrow"
+                android:textAlignment="center"
+                android:gravity="center_horizontal" />
+
+            <ListView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/tomorrowItems" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="0.5">
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="DAY THREE"
+                android:id="@+id/dayThree"
+                android:textAlignment="center"
+                android:gravity="center_horizontal" />
+
+            <ListView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/day3Items" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:id="@+id/fourDayHoriz"
+        android:layout_weight="0.2">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="0.25">
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="DAY FOUR"
+                android:id="@+id/dayFour"
+                android:textAlignment="center"
+                android:gravity="center_horizontal" />
+
+            <ListView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/day4Items" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="0.25"
+            android:id="@+id/linearLayout2" >
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="DAY FIVE"
+                android:id="@+id/dayFive"
+                android:textAlignment="center"
+                android:gravity="center_horizontal" />
+
+            <ListView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/day5Items" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="0.25"
+            android:id="@+id/linearLayout3" >
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="DAY SIX"
+                android:id="@+id/daySix"
+                android:textAlignment="center"
+                android:gravity="center_horizontal" />
+
+            <ListView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/day6Items" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="0.25"
+            android:id="@+id/linearLayout4" >
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="DAY SEVEN"
+                android:id="@+id/daySeven"
+                android:textAlignment="center"
+                android:gravity="center_horizontal" />
+
+            <ListView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/day7Items" />
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>
