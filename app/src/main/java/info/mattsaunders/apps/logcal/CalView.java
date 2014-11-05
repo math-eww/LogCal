@@ -40,6 +40,13 @@ public class CalView extends Activity {
         return calendar.getTime();
     }
 
+    public Date increaseDay(Date date) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.add(Calendar.DATE, 1);
+        return calendar.getTime();
+    }
+
 
 
     @Override
@@ -193,7 +200,29 @@ public class CalView extends Activity {
 
         System.out.println("StartDateD built! Length: " + startDateD.size());
 
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        //write loop here: Loop through all 7 days, using increaseDay(stTimeD) and increaseDay(enTimeD)
+        //then convert with getEndOfDay and getStartOfDay
+        //and long stTime = stTimeD.getTime();
+        //
+        //Find a way to handle changing R.id.todayItems to tomorrowItems and so on
+        //
+        //Move code into dedicated functions?
+        //Move time assignments down, to consolidate
+        //
+        //Make events clickable, to give more detail
+        //Automatically give extra detail on the Today/Tomorrow sections, but not on the rest of the days
+        //
+        ///////////////////////////////////////////////////////////////////////////////////////////
+        /*
+        Date stTimeD = new Date();
+        stTimeD = getStartOfDay(stTimeD);
+        long stTime = stTimeD.getTime();
 
+        Date enTimeD = new Date();
+        enTimeD = getEndOfDay(enTimeD);
+        long enTime = enTimeD.getTime();
+         */
 
         //Determine where to display items, if at all: index array stores integers indicating which elements of eventList, etc, fall withing specific times.
         int i = 0;
@@ -202,7 +231,7 @@ public class CalView extends Activity {
             if (stTime <= dateTime && enTime >= dateTime) {
                 index.add(i);
             }
-        i++;
+            i++;
         }
         System.out.println("Printing events that fall within time " + stTimeD + " and " + enTimeD);
         String[] values = new String[index.size()];
@@ -213,7 +242,7 @@ public class CalView extends Activity {
             i++;
         }
 
-        System.out.println(values);
+        //System.out.println(values);
 
         //get place to store values
         ListView todayItems = (ListView) findViewById( R.id.todayItems );
@@ -223,60 +252,6 @@ public class CalView extends Activity {
 
         todayItems.setAdapter(adapter);
 
-
-
-
-
-
-
-        /*
-        //make this a method, to accept stTime and enTime as start date and end date - ie one call for each day displayed
-        Uri CALENDAR_URI = CalendarContract.Events.CONTENT_URI;
-        Context context;
-        context = getApplicationContext();
-        Cursor cursors = context.getContentResolver().query(CALENDAR_URI, new String[]{ "_id", "title", "description", "dtstart", "dtend", "eventLocation" },
-                null,null, null);
-
-        cursors.moveToFirst();
-        String[] CalNames = new String[cursors.getCount()]; //String array of calendar names
-        int[] CalIds = new int[cursors.getCount()]; //Int array of calendar IDs
-
-        //Debug Print Outs:///////////////////////////////////////////////////////////////////////
-        System.out.println("Begin Looping through Calendars to find events within start and end time");
-        System.out.println("CalNames Length = " + CalNames.length);
-        /////////////////////////////////////////////////////////////////////////////////////////
-
-        //Begin loop through returned calendars
-        for (int i = 0; i < CalNames.length; i++) {
-            CalIds[i] = cursors.getInt(0);
-            CalNames[i] = "Event" + cursors.getInt(0) + ": \nTitle: " + cursors.getString(1) + "\nDescription: " + cursors.getString(2) + "\nStart Date: " + new Date(cursors.getLong(3)) + "\nEnd Date : " + new Date(cursors.getLong(4)) + "\nLocation : " + cursors.getString(5);
-
-            Date mDate = new Date(cursors.getLong(3)); //gets event time
-            Date nDate = new Date(cursors.getLong(4)); //gets event time
-
-            long mTime = mDate.getTime();
-            long lTime = nDate.getTime();
-            //Debug Print Outs://////////////////////////////////////////////////////////////////
-            System.out.println("mDate = " + mDate + " / nDate = " + nDate + " / mTime = " + mTime + " / lTime = " + lTime);
-            //System.out.println("CalNames::i:: " + CalNames[i]);
-            /////////////////////////////////////////////////////////////////////////////////////
-
-            if (stTime <= mTime && enTime >= lTime) { //checks if event occurs within day we're looking at
-                String eid = cursors.getString(0); //event ID
-
-                int eID = Integer.parseInt(eid); //event ID int
-
-                String desc = cursors.getString(2); //event description
-                String title = cursors.getString(1); //event title
-
-                //Debug Print Outs:///////////////////////////////////////////////////////////////
-                System.out.println("EVENT LISTING: "+ eid + " " + eID + " - " + title + " " + desc);
-                //////////////////////////////////////////////////////////////////////////////////
-            }
-        }
-
-        */
-        //end get events by date
     }
 
 
