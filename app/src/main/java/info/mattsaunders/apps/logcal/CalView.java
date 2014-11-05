@@ -1,15 +1,45 @@
 package info.mattsaunders.apps.logcal;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ListView;
 import android.widget.TextView;
 
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 public class CalView extends Activity {
+
+
+    public Date getEndOfDay(Date date) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.set(Calendar.HOUR_OF_DAY, 23);
+        calendar.set(Calendar.MINUTE, 59);
+        calendar.set(Calendar.SECOND, 59);
+        calendar.set(Calendar.MILLISECOND, 999);
+        return calendar.getTime();
+    }
+
+    public Date getStartOfDay(Date date) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        return calendar.getTime();
+    }
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,7 +133,136 @@ public class CalView extends Activity {
         text=(TextView)findViewById(R.id.daySeven);
         text.setText(day7);
 
+        //Get calendar events: query google calendar for event list, sort by date
 
+        //SETTING DATES //for today
+        Date stTimeD = new Date();
+        stTimeD = getStartOfDay(stTimeD);
+        //String stTimeD = new SimpleDateFormat("yyyy-MM-dd").format(cDate);
+        long stTime = stTimeD.getTime();
+
+        Date enTimeD = new Date();
+        enTimeD = getEndOfDay(enTimeD);
+        //String stTimeD = new SimpleDateFormat("yyyy-MM-dd").format(cDate);
+        long enTime = enTimeD.getTime();
+
+
+
+        //Debug Print outs: //////////////////////////////////////////////////////////////////////
+        System.out.println("START TIME: " + stTimeD + " " + stTime);
+        System.out.println("END TIME: " + enTimeD + " " + enTime);
+        //////////////////////////////////////////////////////////////////////////////////////////
+
+
+        //Call Utility.java to get events within dates
+        Context context = getApplicationContext();
+        Utility.readCalendarEvent(context);
+        ArrayList<String> eventList = Utility.nameOfEvent;
+        ArrayList<String> startDate = Utility.startDates;
+        //ArrayList<String> endDate = Utility.endDates;
+        ArrayList<String> descr = Utility.descriptions;
+
+        //long[] startDateD = new long[startDate.size()];
+        List<Long> startDateD = new ArrayList<Long>();
+
+        //DEBUG Check lists for items - should all have same num of items//////////////////////////
+
+        System.out.println(eventList);
+        System.out.println(startDate);
+        System.out.println(descr);
+
+        System.out.println(eventList.size());
+        System.out.println(startDate.size());
+        System.out.println(descr.size());
+
+        //Build list of dates as milliseconds so we can compare with current/desired times, and see if we should display items
+        for (String s : startDate) {
+            SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss a");
+            //Date d = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss a", Locale.ENGLISH).parse(s);
+            try {
+                Date d = formatter.parse(s);
+                long mili = d.getTime();
+                //System.out.println(mili);
+                startDateD.add(mili);
+            } catch (ParseException e) {
+                System.out.println("ERROR: Can't parse date from string!");
+                e.printStackTrace();
+            }
+        }
+
+        System.out.println("StartDateD built! Length: " + startDateD.size());
+
+
+        ListView todayItems = (ListView) findViewById( R.id.todayItems );
+
+
+        //Determine where to display items, if at all: index array stores integers indicating which elements of eventList, etc, fall withing specific times.
+        int i = 0;
+        List<Integer> index = new ArrayList<Integer>();
+        for (long dateTime : startDateD) {
+            if (stTime <= dateTime && enTime >= dateTime) {
+                index.add(i);
+            }
+        i++;
+        }
+        System.out.println("Printing events that fall within time " + stTimeD + " and " + enTimeD);
+        for (int ind : index) {
+            System.out.println(eventList.get(ind));
+        }
+
+
+
+
+
+
+        /*
+        //make this a method, to accept stTime and enTime as start date and end date - ie one call for each day displayed
+        Uri CALENDAR_URI = CalendarContract.Events.CONTENT_URI;
+        Context context;
+        context = getApplicationContext();
+        Cursor cursors = context.getContentResolver().query(CALENDAR_URI, new String[]{ "_id", "title", "description", "dtstart", "dtend", "eventLocation" },
+                null,null, null);
+
+        cursors.moveToFirst();
+        String[] CalNames = new String[cursors.getCount()]; //String array of calendar names
+        int[] CalIds = new int[cursors.getCount()]; //Int array of calendar IDs
+
+        //Debug Print Outs:///////////////////////////////////////////////////////////////////////
+        System.out.println("Begin Looping through Calendars to find events within start and end time");
+        System.out.println("CalNames Length = " + CalNames.length);
+        /////////////////////////////////////////////////////////////////////////////////////////
+
+        //Begin loop through returned calendars
+        for (int i = 0; i < CalNames.length; i++) {
+            CalIds[i] = cursors.getInt(0);
+            CalNames[i] = "Event" + cursors.getInt(0) + ": \nTitle: " + cursors.getString(1) + "\nDescription: " + cursors.getString(2) + "\nStart Date: " + new Date(cursors.getLong(3)) + "\nEnd Date : " + new Date(cursors.getLong(4)) + "\nLocation : " + cursors.getString(5);
+
+            Date mDate = new Date(cursors.getLong(3)); //gets event time
+            Date nDate = new Date(cursors.getLong(4)); //gets event time
+
+            long mTime = mDate.getTime();
+            long lTime = nDate.getTime();
+            //Debug Print Outs://////////////////////////////////////////////////////////////////
+            System.out.println("mDate = " + mDate + " / nDate = " + nDate + " / mTime = " + mTime + " / lTime = " + lTime);
+            //System.out.println("CalNames::i:: " + CalNames[i]);
+            /////////////////////////////////////////////////////////////////////////////////////
+
+            if (stTime <= mTime && enTime >= lTime) { //checks if event occurs within day we're looking at
+                String eid = cursors.getString(0); //event ID
+
+                int eID = Integer.parseInt(eid); //event ID int
+
+                String desc = cursors.getString(2); //event description
+                String title = cursors.getString(1); //event title
+
+                //Debug Print Outs:///////////////////////////////////////////////////////////////
+                System.out.println("EVENT LISTING: "+ eid + " " + eID + " - " + title + " " + desc);
+                //////////////////////////////////////////////////////////////////////////////////
+            }
+        }
+
+        */
+        //end get events by date
     }
 
 
