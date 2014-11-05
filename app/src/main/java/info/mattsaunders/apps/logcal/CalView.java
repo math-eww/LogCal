@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -193,8 +194,6 @@ public class CalView extends Activity {
         System.out.println("StartDateD built! Length: " + startDateD.size());
 
 
-        ListView todayItems = (ListView) findViewById( R.id.todayItems );
-
 
         //Determine where to display items, if at all: index array stores integers indicating which elements of eventList, etc, fall withing specific times.
         int i = 0;
@@ -206,9 +205,24 @@ public class CalView extends Activity {
         i++;
         }
         System.out.println("Printing events that fall within time " + stTimeD + " and " + enTimeD);
+        String[] values = new String[index.size()];
+        i = 0;
         for (int ind : index) {
             System.out.println(eventList.get(ind));
+            values[i] = eventList.get(ind);
+            i++;
         }
+
+        System.out.println(values);
+
+        //get place to store values
+        ListView todayItems = (ListView) findViewById( R.id.todayItems );
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_list_item_1, android.R.id.text1, values);
+
+        todayItems.setAdapter(adapter);
+
 
 
 
