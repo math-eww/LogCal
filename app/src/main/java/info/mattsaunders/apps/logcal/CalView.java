@@ -19,6 +19,14 @@ import java.util.List;
 
 public class CalView extends Activity {
 
+    String[] findMeStrings = {"todayItems",
+                              "tomorrowItems",
+                              "day3Items",
+                              "day4Items",
+                              "day5Items",
+                              "day6Items",
+                              "day7Items"};
+
 
     public Date getEndOfDay(Date date) {
         Calendar calendar = Calendar.getInstance();
@@ -47,28 +55,50 @@ public class CalView extends Activity {
         return calendar.getTime();
     }
 
+     public String[] getValues(long stTime,long enTime, ArrayList<String> eventList,List<Long> startDateD) {
+        int i = 0;
+        List<Integer> index = new ArrayList<Integer>();
+        for (long dateTime : startDateD) {
+            if (stTime <= dateTime && enTime >= dateTime) {
+                index.add(i);
+            }
+            i++;
+        }
 
+        //System.out.println("Printing events that fall within time " + stTimeD + " and " + enTimeD);
+        String[] values = new String[index.size()];
+        i = 0;
+        for (int ind : index) {
+            System.out.println(eventList.get(ind));
+            values[i] = eventList.get(ind);
+            i++;
+        }
+        return values;
+    }
+
+    public void displayItems(String findView,String[] values) {
+        int resID = getResources().getIdentifier(findView,
+                "id", getPackageName());
+        ListView todayItems = (ListView) findViewById(resID);
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_list_item_1, android.R.id.text1, values);
+
+        todayItems.setAdapter(adapter);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cal_view);
 
-        //toggle debug
-        boolean debugMe = false;
-
-        //Set text labels for days:
+        ////////////////////////////Set text labels for days:////////////////////////////////////
         //First get what day it is
         int weekDay;
         Calendar calendar = Calendar.getInstance();
         weekDay = calendar.get(Calendar.DAY_OF_WEEK);
-
-        if (debugMe) {
-            System.out.println(weekDay);
-        }
-
         //Set strings to corresponding days for display
-        String day3 = "test";
+        String day3 = "test"; //placeholder strings
         String day4 = "test";
         String day5 = "test";
         String day6 = "test";
@@ -126,9 +156,6 @@ public class CalView extends Activity {
 
                 break;
         }
-        if (debugMe) {
-            System.out.println(day3);
-        }
         //Finally print out the correct labels for the days of the week
         TextView text=(TextView)findViewById(R.id.dayThree);
         text.setText(day3);
@@ -141,26 +168,10 @@ public class CalView extends Activity {
         text=(TextView)findViewById(R.id.daySeven);
         text.setText(day7);
 
-        //Get calendar events: query google calendar for event list, sort by date
 
-        //SETTING DATES //for today
-        Date stTimeD = new Date();
-        stTimeD = getStartOfDay(stTimeD);
-        //String stTimeD = new SimpleDateFormat("yyyy-MM-dd").format(cDate);
-        long stTime = stTimeD.getTime();
-
-        Date enTimeD = new Date();
-        enTimeD = getEndOfDay(enTimeD);
-        //String stTimeD = new SimpleDateFormat("yyyy-MM-dd").format(cDate);
-        long enTime = enTimeD.getTime();
-
-
-
-        //Debug Print outs: //////////////////////////////////////////////////////////////////////
-        System.out.println("START TIME: " + stTimeD + " " + stTime);
-        System.out.println("END TIME: " + enTimeD + " " + enTime);
-        //////////////////////////////////////////////////////////////////////////////////////////
-
+        ///////////////////////////////////////////////////////////////////////////////////////////
+        ///////////////////////////////////////////////////////////////////////////////////////////
+        //////////Get calendar events: query google calendar for event list, sort by date//////////
 
         //Call Utility.java to get events within dates
         Context context = getApplicationContext();
@@ -170,35 +181,67 @@ public class CalView extends Activity {
         //ArrayList<String> endDate = Utility.endDates;
         ArrayList<String> descr = Utility.descriptions;
 
-        //long[] startDateD = new long[startDate.size()];
-        List<Long> startDateD = new ArrayList<Long>();
-
-        //DEBUG Check lists for items - should all have same num of items//////////////////////////
-
-        System.out.println(eventList);
-        System.out.println(startDate);
-        System.out.println(descr);
-
-        System.out.println(eventList.size());
-        System.out.println(startDate.size());
-        System.out.println(descr.size());
-
         //Build list of dates as milliseconds so we can compare with current/desired times, and see if we should display items
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss a");
+        List<Long> startDateD = new ArrayList<Long>();
         for (String s : startDate) {
-            SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss a");
-            //Date d = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss a", Locale.ENGLISH).parse(s);
             try {
                 Date d = formatter.parse(s);
                 long mili = d.getTime();
-                //System.out.println(mili);
                 startDateD.add(mili);
             } catch (ParseException e) {
                 System.out.println("ERROR: Can't parse date from string!");
                 e.printStackTrace();
             }
         }
-
         System.out.println("StartDateD built! Length: " + startDateD.size());
+
+        //Setting dates, and displaying events that fall within dates. Starting with today
+        Date stTimeD = new Date(); //Start time
+        stTimeD = getStartOfDay(stTimeD);
+        long stTime = stTimeD.getTime();
+
+        Date enTimeD = new Date(); //End time
+        enTimeD = getEndOfDay(enTimeD);
+        long enTime = enTimeD.getTime();
+
+        //For loop to go through each day, and set the appropriate events to display
+        String[] values;
+        for( int y=0;y<7; y++ ) {
+            values = getValues(stTime,enTime,eventList,startDateD);
+            displayItems(findMeStrings[y],values);
+
+            //Debug print out:
+            System.out.println("Y = " + y + " ||||||START TIME: " + stTimeD + " " + stTime);
+            System.out.println("Y = " + y + " ||||||END TIME: " + enTimeD + " " + enTime);
+            //End debug print out
+
+            stTimeD = increaseDay(stTimeD);
+            enTimeD = increaseDay(enTimeD);
+            stTime = stTimeD.getTime();
+            enTime = enTimeD.getTime();
+        }
+
+        /*
+        String[] values = getValues(stTime,enTime,eventList,startDateD);
+        displayItems("todayItems",values);
+
+        stTimeD = increaseDay(stTimeD);
+        enTimeD = increaseDay(enTimeD);
+        stTime = stTimeD.getTime();
+        enTime = enTimeD.getTime();
+
+        values = getValues(stTime,enTime,eventList,startDateD);
+        displayItems("tomorrowItems",values);
+
+        stTimeD = increaseDay(stTimeD);
+        enTimeD = increaseDay(enTimeD);
+        stTime = stTimeD.getTime();
+        enTime = enTimeD.getTime();
+
+        values = getValues(stTime,enTime,eventList,startDateD);
+        displayItems("day3Items",values);
+        */
 
         ////////////////////////////////////////////////////////////////////////////////////////////
         //write loop here: Loop through all 7 days, using increaseDay(stTimeD) and increaseDay(enTimeD)
@@ -224,6 +267,7 @@ public class CalView extends Activity {
         long enTime = enTimeD.getTime();
          */
 
+        /*
         //Determine where to display items, if at all: index array stores integers indicating which elements of eventList, etc, fall withing specific times.
         int i = 0;
         List<Integer> index = new ArrayList<Integer>();
@@ -233,6 +277,7 @@ public class CalView extends Activity {
             }
             i++;
         }
+
         System.out.println("Printing events that fall within time " + stTimeD + " and " + enTimeD);
         String[] values = new String[index.size()];
         i = 0;
@@ -241,9 +286,11 @@ public class CalView extends Activity {
             values[i] = eventList.get(ind);
             i++;
         }
-
+        //This could be a a function, set to take variable findView it takes as input
+        //it should go in R.id.today items making it R.id.findView
+        //also takes values as variable to display the items required by the view
+        //No. need to create new adapters each time,
         //System.out.println(values);
-
         //get place to store values
         ListView todayItems = (ListView) findViewById( R.id.todayItems );
 
@@ -251,7 +298,7 @@ public class CalView extends Activity {
                 android.R.layout.simple_list_item_1, android.R.id.text1, values);
 
         todayItems.setAdapter(adapter);
-
+        */
     }
 
 
