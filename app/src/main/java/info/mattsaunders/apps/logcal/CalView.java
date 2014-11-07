@@ -64,8 +64,6 @@ public class CalView extends Activity {
             }
             i++;
         }
-
-        //System.out.println("Printing events that fall within time " + stTimeD + " and " + enTimeD);
         String[] values = new String[index.size()];
         i = 0;
         for (int ind : index) {
@@ -222,83 +220,6 @@ public class CalView extends Activity {
             enTime = enTimeD.getTime();
         }
 
-        /*
-        String[] values = getValues(stTime,enTime,eventList,startDateD);
-        displayItems("todayItems",values);
-
-        stTimeD = increaseDay(stTimeD);
-        enTimeD = increaseDay(enTimeD);
-        stTime = stTimeD.getTime();
-        enTime = enTimeD.getTime();
-
-        values = getValues(stTime,enTime,eventList,startDateD);
-        displayItems("tomorrowItems",values);
-
-        stTimeD = increaseDay(stTimeD);
-        enTimeD = increaseDay(enTimeD);
-        stTime = stTimeD.getTime();
-        enTime = enTimeD.getTime();
-
-        values = getValues(stTime,enTime,eventList,startDateD);
-        displayItems("day3Items",values);
-        */
-
-        ////////////////////////////////////////////////////////////////////////////////////////////
-        //write loop here: Loop through all 7 days, using increaseDay(stTimeD) and increaseDay(enTimeD)
-        //then convert with getEndOfDay and getStartOfDay
-        //and long stTime = stTimeD.getTime();
-        //
-        //Find a way to handle changing R.id.todayItems to tomorrowItems and so on
-        //
-        //Move code into dedicated functions?
-        //Move time assignments down, to consolidate
-        //
-        //Make events clickable, to give more detail
-        //Automatically give extra detail on the Today/Tomorrow sections, but not on the rest of the days
-        //
-        ///////////////////////////////////////////////////////////////////////////////////////////
-        /*
-        Date stTimeD = new Date();
-        stTimeD = getStartOfDay(stTimeD);
-        long stTime = stTimeD.getTime();
-
-        Date enTimeD = new Date();
-        enTimeD = getEndOfDay(enTimeD);
-        long enTime = enTimeD.getTime();
-         */
-
-        /*
-        //Determine where to display items, if at all: index array stores integers indicating which elements of eventList, etc, fall withing specific times.
-        int i = 0;
-        List<Integer> index = new ArrayList<Integer>();
-        for (long dateTime : startDateD) {
-            if (stTime <= dateTime && enTime >= dateTime) {
-                index.add(i);
-            }
-            i++;
-        }
-
-        System.out.println("Printing events that fall within time " + stTimeD + " and " + enTimeD);
-        String[] values = new String[index.size()];
-        i = 0;
-        for (int ind : index) {
-            System.out.println(eventList.get(ind));
-            values[i] = eventList.get(ind);
-            i++;
-        }
-        //This could be a a function, set to take variable findView it takes as input
-        //it should go in R.id.today items making it R.id.findView
-        //also takes values as variable to display the items required by the view
-        //No. need to create new adapters each time,
-        //System.out.println(values);
-        //get place to store values
-        ListView todayItems = (ListView) findViewById( R.id.todayItems );
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_list_item_1, android.R.id.text1, values);
-
-        todayItems.setAdapter(adapter);
-        */
     }
 
 
