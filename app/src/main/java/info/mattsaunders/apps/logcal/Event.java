@@ -10,12 +10,16 @@ public class Event {
     public String endDate;
     public boolean allDay;
 
-    public Event(String title, String description, String startDate, String endDate, boolean allDay) {
+    public Event(String title, String description, String startDate, String endDate, int allDay) {
         this.title = title;
         this.description = description;
         this.startDate = startDate;
         this.endDate = endDate;
-        this.allDay = allDay;
+        if (allDay > 0) {
+            this.allDay = true;
+        } else {
+            this.allDay = false;
+        }
     }
 
     public String getTitle() {

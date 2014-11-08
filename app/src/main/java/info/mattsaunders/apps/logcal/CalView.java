@@ -5,11 +5,8 @@ import android.content.Context;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
-
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -57,38 +54,6 @@ public class CalView extends Activity {
         return calendar.getTime();
     }
 
-    /*
-     public String[] getValues(long stTime,long enTime, ArrayList<String> eventList,List<Long> startDateD) {
-        int i = 0;
-        List<Integer> index = new ArrayList<Integer>();
-        for (long dateTime : startDateD) {
-            if (stTime <= dateTime && enTime >= dateTime) {
-                index.add(i);
-            }
-            i++;
-        }
-        String[] values = new String[index.size()];
-        i = 0;
-        for (int ind : index) {
-            //System.out.println(eventList.get(ind));
-            values[i] = eventList.get(ind);
-            i++;
-        }
-        return values;
-    }
-
-    public void displayItems(String findView,String[] values) {
-        int resID = getResources().getIdentifier(findView,
-                "id", getPackageName());
-        ListView todayItems = (ListView) findViewById(resID);
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_list_item_1, android.R.id.text1, values);
-
-        todayItems.setAdapter(adapter);
-    }
-    */
-
     public Date stringToDate(String s){
         Date d = null;
         try {
@@ -100,7 +65,7 @@ public class CalView extends Activity {
         return d;
     }
 
-    public ArrayList<Event> buildEventList (long stTime,long enTime, ArrayList<String> eventList, ArrayList<String> descr, ArrayList<String> startDate, ArrayList<String> endDate, List<Long> startDateD) {
+    public ArrayList<Event> buildEventList (long stTime,long enTime, ArrayList<String> eventList, ArrayList<String> descr, ArrayList<String> startDate, ArrayList<String> endDate, ArrayList<Integer> allDay,List<Long> startDateD) {
         int i = 0;
         List<Integer> index = new ArrayList<Integer>();
         for (long dateTime : startDateD) {
@@ -113,7 +78,7 @@ public class CalView extends Activity {
         i = 0;
         for (int ind : index) {
             //System.out.println(eventList.get(ind));
-            Event tempEvent = new Event(eventList.get(ind),descr.get(ind),startDate.get(ind),endDate.get(ind),false);
+            Event tempEvent = new Event(eventList.get(ind),descr.get(ind),startDate.get(ind),endDate.get(ind),allDay.get(ind));
             eventObjList.add(tempEvent);
             i++;
         }
@@ -224,6 +189,7 @@ public class CalView extends Activity {
         ArrayList<String> startDate = Utility.startDates;
         ArrayList<String> endDate = Utility.endDates;
         ArrayList<String> descr = Utility.descriptions;
+        ArrayList<Integer> allDayBool = Utility.allDayBool;
 
         //Build list of dates as milliseconds so we can compare with current/desired times, and see if we should display items
         //SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss a");
@@ -232,16 +198,6 @@ public class CalView extends Activity {
             Date d = stringToDate(s);
             long milli = d.getTime();
             startDateD.add(milli);
-            /*
-            try {
-                Date d = formatter.parse(s);
-                long mili = d.getTime();
-                startDateD.add(mili);
-            } catch (ParseException e) {
-                System.out.println("ERROR: Can't parse date from string!");
-                e.printStackTrace();
-            }
-            */
         }
         System.out.println("StartDateD built! Length: " + startDateD.size());
 
@@ -255,12 +211,9 @@ public class CalView extends Activity {
         long enTime = enTimeD.getTime();
 
         //For loop to go through each day, and set the appropriate events to display
-        //String[] values;
-
         ArrayList<Event> eventObjectList;
         for( int y=0;y<7; y++ ) {
-
-            eventObjectList = buildEventList(stTime, enTime, eventList, descr, startDate, endDate, startDateD);
+            eventObjectList = buildEventList(stTime, enTime, eventList, descr, startDate, endDate, allDayBool,startDateD);
             for (Event eObj : eventObjectList){
                 System.out.println("PRINTING FROM OBJECT LIST ||||||||DEBUG|||||||:");
                 try {
@@ -268,6 +221,7 @@ public class CalView extends Activity {
                     System.out.println(eObj.getStartDate());
                     System.out.println(eObj.getEndDate());
                     System.out.println(eObj.getDescription());
+                    System.out.println(eObj.checkAllDay());
                 } catch (Exception e) {
                     System.out.println("FAILED::::: PRINTING FROM OBJECT LIST");
                     e.printStackTrace();
@@ -275,9 +229,6 @@ public class CalView extends Activity {
             }
 
             displayEvent(findMeStrings[y],eventObjectList);
-
-            //values = getValues(stTime,enTime,eventList,startDateD);
-            //displayItems(findMeStrings[y],values);
 
             //Debug print out:
             System.out.println("Y = " + y + " ||||||START TIME: " + stTimeD + " " + stTime);
