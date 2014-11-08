@@ -13,6 +13,11 @@ public class EventDisplayAdapter extends BaseAdapter {
     private LayoutInflater mInflater;
     private List<Event> mEvents;
 
+
+    //This may need to take more input - like this one does:
+    //ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1, android.R.id.text1, values
+    //It seems to take four inputs, not sure why the difference.
+    
     public EventDisplayAdapter(Context context, List<Event> events) {
         mInflater = LayoutInflater.from(context);
         mEvents = events;
