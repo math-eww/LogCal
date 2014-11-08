@@ -19,6 +19,8 @@ import java.util.List;
 
 public class CalView extends Activity {
 
+    SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss a");
+
     String[] findMeStrings = {"todayItems",
             "tomorrowItems",
             "day3Items",
@@ -86,6 +88,17 @@ public class CalView extends Activity {
         todayItems.setAdapter(adapter);
     }
     */
+
+    public Date stringToDate(String s){
+        Date d = null;
+        try {
+            d = formatter.parse(s);
+        } catch (ParseException e) {
+            System.out.println("ERROR: Can't parse date from string!");
+            e.printStackTrace();
+        }
+        return d;
+    }
 
     public ArrayList<Event> buildEventList (long stTime,long enTime, ArrayList<String> eventList, ArrayList<String> descr, ArrayList<String> startDate, ArrayList<String> endDate, List<Long> startDateD) {
         int i = 0;
@@ -213,9 +226,13 @@ public class CalView extends Activity {
         ArrayList<String> descr = Utility.descriptions;
 
         //Build list of dates as milliseconds so we can compare with current/desired times, and see if we should display items
-        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss a");
+        //SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss a");
         List<Long> startDateD = new ArrayList<Long>();
         for (String s : startDate) {
+            Date d = stringToDate(s);
+            long milli = d.getTime();
+            startDateD.add(milli);
+            /*
             try {
                 Date d = formatter.parse(s);
                 long mili = d.getTime();
@@ -224,6 +241,7 @@ public class CalView extends Activity {
                 System.out.println("ERROR: Can't parse date from string!");
                 e.printStackTrace();
             }
+            */
         }
         System.out.println("StartDateD built! Length: " + startDateD.size());
 
