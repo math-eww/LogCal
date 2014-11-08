@@ -192,7 +192,6 @@ public class CalView extends Activity {
         ArrayList<Integer> allDayBool = Utility.allDayBool;
 
         //Build list of dates as milliseconds so we can compare with current/desired times, and see if we should display items
-        //SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss a");
         List<Long> startDateD = new ArrayList<Long>();
         for (String s : startDate) {
             Date d = stringToDate(s);
@@ -224,13 +223,11 @@ public class CalView extends Activity {
             }
 
             for (Event eObj : eventObjectList){
-                //Check to see if there are any all day events in the event object list
-                //if there are, add them to the temp list, and set them to be removed from the object list
+                //Check to see if there are any all day events in the event object list, add events that are all day to temp list
                 if (eObj.allDay && !eObj.beenMoved) {
                     tempEventObjectList.add(eObj);
                     eObj.beenMoved = true;
                     System.out.println("||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||THIS OBJECT WILL BE MOVED");
-                    //eventObjectList.remove(eObj);
                 }
 
                 System.out.println("PRINTING FROM OBJECT LIST ||||||||DEBUG|||||||:");
@@ -246,6 +243,7 @@ public class CalView extends Activity {
                 }
             }
 
+            //remove all day events from current eventObjectList, to be added on the next iteration
             for (Event tempObj : tempEventObjectList) {
                 eventObjectList.remove(tempObj);
             }
