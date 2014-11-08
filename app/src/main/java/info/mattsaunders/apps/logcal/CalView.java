@@ -177,7 +177,7 @@ public class CalView extends Activity {
         ArrayList<String> eventList = Utility.nameOfEvent;
         ArrayList<String> startDate = Utility.startDates;
         //ArrayList<String> endDate = Utility.endDates;
-        ArrayList<String> descr = Utility.descriptions;
+        //ArrayList<String> descr = Utility.descriptions;
 
         //Build list of dates as milliseconds so we can compare with current/desired times, and see if we should display items
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss a");
