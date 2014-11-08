@@ -5,17 +5,17 @@ import java.util.Date;
 /**
  * Build an object to store the event information:
  */
-public class eventObj {
+public class Event {
     public String title;
     public String description;
     public Date startDate;
     public Date endDate;
     public boolean allDay;
-    public eventObj() {
+    public Event() {
         super();
     }
 
-    public eventObj(String title, String description, Date startDate, Date endDate, boolean allDay) {
+    public Event(String title, String description, Date startDate, Date endDate, boolean allDay) {
         //super(title,description,startDate,endDate,allDay);
         super();
         title = this.title;
@@ -40,6 +40,7 @@ public class eventObj {
     public boolean checkAllDay() {
         return allDay;
     }
+
 
 
 }
