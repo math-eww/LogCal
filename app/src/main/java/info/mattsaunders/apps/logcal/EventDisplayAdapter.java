@@ -65,6 +65,11 @@ public class EventDisplayAdapter extends BaseAdapter {
             holder.description.setText(event.getDescription());
         }
 
+        //Styling
+        holder.title.setTextSize(15);
+        holder.time.setTextSize(8);
+        holder.description.setTextSize(8);
+
         return view;
     }
 
