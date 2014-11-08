@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 /**
- * Created by Matt on 04/11/2014.
+ * Get info from calendar, building ArrayList<String> to store values
  */
 public class Utility {
     public static ArrayList<String> nameOfEvent = new ArrayList<String>();
@@ -37,7 +37,11 @@ public class Utility {
 
             nameOfEvent.add(cursor.getString(1));
             startDates.add(getDate(Long.parseLong(cursor.getString(3))));
-            //endDates.add(getDate(Long.parseLong(cursor.getString(4))));
+            if (cursor.getString(4) != null) {
+                endDates.add(getDate(Long.parseLong(cursor.getString(4))));
+            } else {
+                endDates.add(null);
+            }
             descriptions.add(cursor.getString(2));
             CNames[i] = cursor.getString(1);
             cursor.moveToNext();

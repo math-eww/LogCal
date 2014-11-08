@@ -20,12 +20,12 @@ import java.util.List;
 public class CalView extends Activity {
 
     String[] findMeStrings = {"todayItems",
-                              "tomorrowItems",
-                              "day3Items",
-                              "day4Items",
-                              "day5Items",
-                              "day6Items",
-                              "day7Items"};
+            "tomorrowItems",
+            "day3Items",
+            "day4Items",
+            "day5Items",
+            "day6Items",
+            "day7Items"};
 
 
     public Date getEndOfDay(Date date) {
@@ -55,6 +55,7 @@ public class CalView extends Activity {
         return calendar.getTime();
     }
 
+    /*
      public String[] getValues(long stTime,long enTime, ArrayList<String> eventList,List<Long> startDateD) {
         int i = 0;
         List<Integer> index = new ArrayList<Integer>();
@@ -67,7 +68,7 @@ public class CalView extends Activity {
         String[] values = new String[index.size()];
         i = 0;
         for (int ind : index) {
-            System.out.println(eventList.get(ind));
+            //System.out.println(eventList.get(ind));
             values[i] = eventList.get(ind);
             i++;
         }
@@ -84,6 +85,38 @@ public class CalView extends Activity {
 
         todayItems.setAdapter(adapter);
     }
+    */
+
+    public ArrayList<Event> buildEventList (long stTime,long enTime, ArrayList<String> eventList, ArrayList<String> descr, ArrayList<String> startDate, ArrayList<String> endDate, List<Long> startDateD) {
+        int i = 0;
+        List<Integer> index = new ArrayList<Integer>();
+        for (long dateTime : startDateD) {
+            if (stTime <= dateTime && enTime >= dateTime) {
+                index.add(i);
+            }
+            i++;
+        }
+        ArrayList<Event> eventObjList = new ArrayList<Event>();
+        i = 0;
+        for (int ind : index) {
+            //System.out.println(eventList.get(ind));
+            Event tempEvent = new Event(eventList.get(ind),descr.get(ind),startDate.get(ind),endDate.get(ind),false);
+            eventObjList.add(tempEvent);
+            i++;
+        }
+        return eventObjList;
+    }
+
+    public void displayEvent(String findView,ArrayList<Event> eventObjList) {
+        int resID = getResources().getIdentifier(findView,
+                "id", getPackageName());
+        ListView todayItems = (ListView) findViewById(resID);
+
+        EventDisplayAdapter adapter = new EventDisplayAdapter(this, eventObjList);
+
+        todayItems.setAdapter(adapter);
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -176,8 +209,8 @@ public class CalView extends Activity {
         Utility.readCalendarEvent(context);
         ArrayList<String> eventList = Utility.nameOfEvent;
         ArrayList<String> startDate = Utility.startDates;
-        //ArrayList<String> endDate = Utility.endDates;
-        //ArrayList<String> descr = Utility.descriptions;
+        ArrayList<String> endDate = Utility.endDates;
+        ArrayList<String> descr = Utility.descriptions;
 
         //Build list of dates as milliseconds so we can compare with current/desired times, and see if we should display items
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss a");
@@ -204,10 +237,29 @@ public class CalView extends Activity {
         long enTime = enTimeD.getTime();
 
         //For loop to go through each day, and set the appropriate events to display
-        String[] values;
+        //String[] values;
+
+        ArrayList<Event> eventObjectList;
         for( int y=0;y<7; y++ ) {
-            values = getValues(stTime,enTime,eventList,startDateD);
-            displayItems(findMeStrings[y],values);
+
+            eventObjectList = buildEventList(stTime, enTime, eventList, descr, startDate, endDate, startDateD);
+            for (Event eObj : eventObjectList){
+                System.out.println("PRINTING FROM OBJECT LIST ||||||||DEBUG|||||||:");
+                try {
+                    System.out.println(eObj.getTitle());
+                    System.out.println(eObj.getStartDate());
+                    System.out.println(eObj.getEndDate());
+                    System.out.println(eObj.getDescription());
+                } catch (Exception e) {
+                    System.out.println("FAILED::::: PRINTING FROM OBJECT LIST");
+                    e.printStackTrace();
+                }
+            }
+
+            displayEvent(findMeStrings[y],eventObjectList);
+
+            //values = getValues(stTime,enTime,eventList,startDateD);
+            //displayItems(findMeStrings[y],values);
 
             //Debug print out:
             System.out.println("Y = " + y + " ||||||START TIME: " + stTimeD + " " + stTime);
