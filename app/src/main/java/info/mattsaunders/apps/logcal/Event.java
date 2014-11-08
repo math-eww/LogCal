@@ -9,6 +9,7 @@ public class Event {
     public String startDate;
     public String endDate;
     public boolean allDay;
+    public boolean beenMoved = false; //helper attribute to deal with all day events
 
     public Event(String title, String description, String startDate, String endDate, int allDay) {
         this.title = title;

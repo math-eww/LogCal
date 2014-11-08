@@ -212,9 +212,27 @@ public class CalView extends Activity {
 
         //For loop to go through each day, and set the appropriate events to display
         ArrayList<Event> eventObjectList;
+        ArrayList<Event> tempEventObjectList = new ArrayList<Event>();
         for( int y=0;y<7; y++ ) {
             eventObjectList = buildEventList(stTime, enTime, eventList, descr, startDate, endDate, allDayBool,startDateD);
+            // If there are items in the temp event storage, add them to main storage, and then clear temp storage
+            if (tempEventObjectList.size() > 0) {
+                for (Event oldEObj: tempEventObjectList) {
+                    eventObjectList.add(oldEObj);
+                }
+                tempEventObjectList.clear();
+            }
+
             for (Event eObj : eventObjectList){
+                //Check to see if there are any all day events in the event object list
+                //if there are, add them to the temp list, and set them to be removed from the object list
+                if (eObj.allDay && !eObj.beenMoved) {
+                    tempEventObjectList.add(eObj);
+                    eObj.beenMoved = true;
+                    System.out.println("||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||THIS OBJECT WILL BE MOVED");
+                    //eventObjectList.remove(eObj);
+                }
+
                 System.out.println("PRINTING FROM OBJECT LIST ||||||||DEBUG|||||||:");
                 try {
                     System.out.println(eObj.getTitle());
@@ -226,6 +244,10 @@ public class CalView extends Activity {
                     System.out.println("FAILED::::: PRINTING FROM OBJECT LIST");
                     e.printStackTrace();
                 }
+            }
+
+            for (Event tempObj : tempEventObjectList) {
+                eventObjectList.remove(tempObj);
             }
 
             displayEvent(findMeStrings[y],eventObjectList);
