@@ -20,13 +20,23 @@ public class CalView extends Activity {
 
     SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss a");
 
-    String[] findMeStrings = {"todayItems",
+    String[] findMeStrings = {
+            "todayItems",
             "tomorrowItems",
             "day3Items",
             "day4Items",
             "day5Items",
             "day6Items",
-            "day7Items"};
+            "day7Items"     };
+
+    String[] layoutIdentifier = {
+            "row_layout",
+            "row_layout2",
+            "row_layout2",
+            "row_layout3",
+            "row_layout3",
+            "row_layout3",
+            "row_layout3"   };
 
     Context context;
 
@@ -100,12 +110,12 @@ public class CalView extends Activity {
         return eventObjList;
     }
 
-    public void displayEvent(String findView,ArrayList<Event> eventObjList) {
+    public void displayEvent(String findView,ArrayList<Event> eventObjList, String layoutID) {
         int resID = getResources().getIdentifier(findView,
                 "id", getPackageName());
         ListView todayItems = (ListView) findViewById(resID);
 
-        EventDisplayAdapter adapter = new EventDisplayAdapter(this, eventObjList);
+        EventDisplayAdapter adapter = new EventDisplayAdapter(this, eventObjList, layoutID);
 
         todayItems.setAdapter(adapter);
     }
@@ -269,7 +279,7 @@ public class CalView extends Activity {
             }
 
             //Call displayEvent function, to print the revised list of event objects to the appropriate section of the screen
-            displayEvent(findMeStrings[y],eventObjectList);
+            displayEvent(findMeStrings[y],eventObjectList,layoutIdentifier[y]);
 
             //Debug print out:
             if (debugSwitch) {

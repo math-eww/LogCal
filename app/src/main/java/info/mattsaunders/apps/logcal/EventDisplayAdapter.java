@@ -12,15 +12,19 @@ import java.util.List;
 public class EventDisplayAdapter extends BaseAdapter {
     private LayoutInflater mInflater;
     private List<Event> mEvents;
-
+    private String mRowLayout;
+    private Context mContext;
 
     //This may need to take more input - like this one does:
     //ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1, android.R.id.text1, values
     //It seems to take four inputs, not sure why the difference.
 
-    public EventDisplayAdapter(Context context, List<Event> events) {
+    public EventDisplayAdapter(Context context, List<Event> events, String rowLayout) {
         mInflater = LayoutInflater.from(context);
         mEvents = events;
+        mRowLayout = rowLayout;
+        mContext = context;
+
     }
 
     @Override
@@ -44,11 +48,20 @@ public class EventDisplayAdapter extends BaseAdapter {
         ViewHolder holder;
 
         if(convertView == null) {
-            view = mInflater.inflate(R.layout.row_layout, parent, false);
+            //Get the ID for R.layout.mRowLayout
+            int resID = mContext.getResources().getIdentifier(mRowLayout, "layout", mContext.getPackageName());
+            view = mInflater.inflate(resID, parent, false);
+
+            //view = mInflater.inflate(R.layout.row_layout, parent, false);
             holder = new ViewHolder();
+
             holder.title = (TextView)view.findViewById(R.id.title);
-            holder.time = (TextView)view.findViewById(R.id.time);
-            holder.description = (TextView)view.findViewById(R.id.description);
+            if (mRowLayout == "row_layout") {
+                holder.time = (TextView) view.findViewById(R.id.time);
+                holder.description = (TextView) view.findViewById(R.id.description);
+            } else if (mRowLayout == "row_layout2") {
+                holder.time = (TextView) view.findViewById(R.id.time);
+            }
             view.setTag(holder);
         } else {
             view = convertView;
@@ -57,20 +70,24 @@ public class EventDisplayAdapter extends BaseAdapter {
 
         Event event = mEvents.get(position);
         holder.title.setText(event.getTitle());
-        if (!event.checkAllDay()) {
-
-            holder.time.setText(event.getStartDate().toString().substring(10).trim().replaceFirst("^0+(?!$)", ""));
-        } else {
-            holder.time.setText("All Day");
+        if (mRowLayout == "row_layout" || mRowLayout == "row_layout2") {
+            if (!event.checkAllDay()) {
+                holder.time.setText(event.getStartDate().toString().substring(10).trim().replaceFirst("^0+(?!$)", ""));
+            } else {
+                holder.time.setText("All Day");
+            }
+            holder.time.setTextSize(8);
         }
-        if (event.getDescription() != null) {
-            holder.description.setText(event.getDescription());
+        if (mRowLayout == "row_layout") {
+            if (event.getDescription() != null) {
+                holder.description.setText(event.getDescription());
+                holder.description.setTextSize(8);
+            }
         }
 
-        //Styling
         holder.title.setTextSize(15);
-        holder.time.setTextSize(8);
-        holder.description.setTextSize(8);
+
+
 
         return view;
     }
