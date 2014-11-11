@@ -42,6 +42,7 @@ public class EventDisplayAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         View view;
         ViewHolder holder;
+
         if(convertView == null) {
             view = mInflater.inflate(R.layout.row_layout, parent, false);
             holder = new ViewHolder();
@@ -57,7 +58,8 @@ public class EventDisplayAdapter extends BaseAdapter {
         Event event = mEvents.get(position);
         holder.title.setText(event.getTitle());
         if (!event.checkAllDay()) {
-            holder.time.setText(event.getStartDate().toString());
+
+            holder.time.setText(event.getStartDate().toString().substring(10).trim().replaceFirst("^0+(?!$)", ""));
         } else {
             holder.time.setText("All Day");
         }

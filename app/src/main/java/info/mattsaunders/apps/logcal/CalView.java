@@ -16,6 +16,8 @@ import java.util.List;
 
 public class CalView extends Activity {
 
+    boolean debugSwitch = true;
+
     SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss a");
 
     String[] findMeStrings = {"todayItems",
@@ -25,6 +27,17 @@ public class CalView extends Activity {
             "day5Items",
             "day6Items",
             "day7Items"};
+
+    Context context;
+
+    ArrayList<String> eventList;
+    ArrayList<String> startDate;
+    ArrayList<String> endDate;
+    ArrayList<String> descr;
+    ArrayList<Integer> allDayBool;
+
+    ArrayList<Event> eventObjectList;
+    ArrayList<Event> tempEventObjectList = new ArrayList<Event>();
 
 
     public Date getEndOfDay(Date date) {
@@ -76,9 +89,11 @@ public class CalView extends Activity {
         }
         ArrayList<Event> eventObjList = new ArrayList<Event>();
         i = 0;
+        String s;
         for (int ind : index) {
             //System.out.println(eventList.get(ind));
-            Event tempEvent = new Event(eventList.get(ind),descr.get(ind),startDate.get(ind),endDate.get(ind),allDay.get(ind));
+            if (descr.get(ind) == null) {s = "";} else {s = descr.get(ind);} //Fixed NullPointerException when accessing description field ------may be unnecessary
+            Event tempEvent = new Event(eventList.get(ind),s,startDate.get(ind),endDate.get(ind),allDay.get(ind));
             eventObjList.add(tempEvent);
             i++;
         }
@@ -95,12 +110,7 @@ public class CalView extends Activity {
         todayItems.setAdapter(adapter);
     }
 
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_cal_view);
-
+    public void dayLabels(){
         ////////////////////////////Set text labels for days:////////////////////////////////////
         //First get what day it is
         int weekDay;
@@ -176,20 +186,22 @@ public class CalView extends Activity {
         text.setText(day6);
         text=(TextView)findViewById(R.id.daySeven);
         text.setText(day7);
+    }
 
+    public void refreshInfo() {
+        //Set the labels of the days to correct values
+        dayLabels();
 
-        ///////////////////////////////////////////////////////////////////////////////////////////
-        ///////////////////////////////////////////////////////////////////////////////////////////
-        //////////Get calendar events: query google calendar for event list, sort by date//////////
+        //Get calendar events: query google calendar for event list, sort by date:
 
-        //Call Utility.java to get events within dates
-        Context context = getApplicationContext();
+        //Call Utility.java to get events
+        context = getApplicationContext();
         Utility.readCalendarEvent(context);
-        ArrayList<String> eventList = Utility.nameOfEvent;
-        ArrayList<String> startDate = Utility.startDates;
-        ArrayList<String> endDate = Utility.endDates;
-        ArrayList<String> descr = Utility.descriptions;
-        ArrayList<Integer> allDayBool = Utility.allDayBool;
+        eventList = Utility.nameOfEvent;
+        startDate = Utility.startDates;
+        endDate = Utility.endDates;
+        descr = Utility.descriptions;
+        allDayBool = Utility.allDayBool;
 
         //Build list of dates as milliseconds so we can compare with current/desired times, and see if we should display items
         List<Long> startDateD = new ArrayList<Long>();
@@ -198,23 +210,26 @@ public class CalView extends Activity {
             long milli = d.getTime();
             startDateD.add(milli);
         }
-        System.out.println("StartDateD built! Length: " + startDateD.size());
+
+        //Debug print out:
+        if (debugSwitch) {
+            System.out.println("StartDateD built! Length: " + startDateD.size());
+        }
 
         //Setting dates, and displaying events that fall within dates. Starting with today
         Date stTimeD = new Date(); //Start time
         stTimeD = getStartOfDay(stTimeD);
         long stTime = stTimeD.getTime();
-
         Date enTimeD = new Date(); //End time
         enTimeD = getEndOfDay(enTimeD);
         long enTime = enTimeD.getTime();
 
         //For loop to go through each day, and set the appropriate events to display
-        ArrayList<Event> eventObjectList;
-        ArrayList<Event> tempEventObjectList = new ArrayList<Event>();
         for( int y=0;y<7; y++ ) {
+            //Build list of Event objects that fall within day
             eventObjectList = buildEventList(stTime, enTime, eventList, descr, startDate, endDate, allDayBool,startDateD);
-            // If there are items in the temp event storage, add them to main storage, and then clear temp storage
+
+            // If there are items in the temp event storage (used to move all day events to proper day), add them to main storage, and then clear temp storage
             if (tempEventObjectList.size() > 0) {
                 for (Event oldEObj: tempEventObjectList) {
                     eventObjectList.add(oldEObj);
@@ -222,6 +237,7 @@ public class CalView extends Activity {
                 tempEventObjectList.clear();
             }
 
+            //Loop through each Event object in the event list
             for (Event eObj : eventObjectList){
                 //Check to see if there are any all day events in the event object list, add events that are all day to temp list
                 if (eObj.allDay && !eObj.beenMoved) {
@@ -230,36 +246,73 @@ public class CalView extends Activity {
                     System.out.println("||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||THIS OBJECT WILL BE MOVED");
                 }
 
-                System.out.println("PRINTING FROM OBJECT LIST ||||||||DEBUG|||||||:");
-                try {
-                    System.out.println(eObj.getTitle());
-                    System.out.println(eObj.getStartDate());
-                    System.out.println(eObj.getEndDate());
-                    System.out.println(eObj.getDescription());
-                    System.out.println(eObj.checkAllDay());
-                } catch (Exception e) {
-                    System.out.println("FAILED::::: PRINTING FROM OBJECT LIST");
-                    e.printStackTrace();
+                //Debug print out:
+                if (debugSwitch) {
+                    System.out.println("PRINTING FROM OBJECT LIST ||||||||DEBUG|||||||:");
+                    try {
+                        System.out.println(eObj.getTitle());
+                        System.out.println(eObj.getStartDate());
+                        System.out.println(eObj.getEndDate());
+                        System.out.println(eObj.getDescription());
+                        System.out.println(eObj.checkAllDay());
+                    } catch (Exception e) {
+                        System.out.println("FAILED::::: PRINTING FROM OBJECT LIST");
+                        e.printStackTrace();
+                    }
                 }
+
             }
 
-            //remove all day events from current eventObjectList, to be added on the next iteration
+            //Remove all day events from current eventObjectList, to be added on the next iteration
             for (Event tempObj : tempEventObjectList) {
                 eventObjectList.remove(tempObj);
             }
 
+            //Call displayEvent function, to print the revised list of event objects to the appropriate section of the screen
             displayEvent(findMeStrings[y],eventObjectList);
 
             //Debug print out:
-            System.out.println("Y = " + y + " ||||||START TIME: " + stTimeD + " " + stTime);
-            System.out.println("Y = " + y + " ||||||END TIME: " + enTimeD + " " + enTime);
-            //End debug print out
+            if (debugSwitch) {
+                System.out.println("Y = " + y + " ||||||START TIME: " + stTimeD + " " + stTime);
+                System.out.println("Y = " + y + " ||||||END TIME: " + enTimeD + " " + enTime);
+            }
 
+            //Increase day for next iteration
             stTimeD = increaseDay(stTimeD);
             enTimeD = increaseDay(enTimeD);
             stTime = stTimeD.getTime();
             enTime = enTimeD.getTime();
+
         }
+    }
+
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_cal_view);
+
+        refreshInfo();
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        setContentView(R.layout.activity_cal_view);
+
+        if (debugSwitch) {
+            System.out.println("RESUMING APP");
+        }
+
+        eventList.clear();
+        startDate.clear();
+        endDate.clear();
+        descr.clear();
+        allDayBool.clear();
+        eventObjectList.clear();
+        tempEventObjectList.clear();
+
+        refreshInfo();
 
     }
 
