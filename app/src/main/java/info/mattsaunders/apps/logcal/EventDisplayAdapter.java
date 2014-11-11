@@ -15,10 +15,6 @@ public class EventDisplayAdapter extends BaseAdapter {
     private String mRowLayout;
     private Context mContext;
 
-    //This may need to take more input - like this one does:
-    //ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1, android.R.id.text1, values
-    //It seems to take four inputs, not sure why the difference.
-
     public EventDisplayAdapter(Context context, List<Event> events, String rowLayout) {
         mInflater = LayoutInflater.from(context);
         mEvents = events;
@@ -56,10 +52,10 @@ public class EventDisplayAdapter extends BaseAdapter {
             holder = new ViewHolder();
 
             holder.title = (TextView)view.findViewById(R.id.title);
-            if (mRowLayout == "row_layout") {
+            if (mRowLayout.equals("row_layout")) {
                 holder.time = (TextView) view.findViewById(R.id.time);
                 holder.description = (TextView) view.findViewById(R.id.description);
-            } else if (mRowLayout == "row_layout2") {
+            } else if (mRowLayout.equals("row_layout2")) {
                 holder.time = (TextView) view.findViewById(R.id.time);
             }
             view.setTag(holder);
@@ -70,15 +66,15 @@ public class EventDisplayAdapter extends BaseAdapter {
 
         Event event = mEvents.get(position);
         holder.title.setText(event.getTitle());
-        if (mRowLayout == "row_layout" || mRowLayout == "row_layout2") {
+        if (mRowLayout.equals("row_layout") || mRowLayout.equals("row_layout2")) {
             if (!event.checkAllDay()) {
-                holder.time.setText(event.getStartDate().toString().substring(10).trim().replaceFirst("^0+(?!$)", ""));
+                holder.time.setText(event.getStartDate().substring(10).trim().replaceFirst("^0+(?!$)", ""));
             } else {
                 holder.time.setText("All Day");
             }
             holder.time.setTextSize(8);
         }
-        if (mRowLayout == "row_layout") {
+        if (mRowLayout.equals("row_layout")) {
             if (event.getDescription() != null) {
                 holder.description.setText(event.getDescription());
                 holder.description.setTextSize(8);
