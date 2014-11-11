@@ -2,9 +2,13 @@ package info.mattsaunders.apps.logcal;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.provider.CalendarContract;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -121,14 +125,54 @@ public class CalView extends Activity {
         return eventObjList;
     }
 
-    public void displayEvent(String findView,ArrayList<Event> eventObjList, String layoutID) {
+    public void displayEvent(String findView,ArrayList<Event> eventObjList, String layoutID, long stTime) {
         int resID = getResources().getIdentifier(findView,
                 "id", getPackageName());
         ListView todayItems = (ListView) findViewById(resID);
 
         EventDisplayAdapter adapter = new EventDisplayAdapter(this, eventObjList, layoutID);
 
+        View v = getLayoutInflater().inflate(R.layout.add_event_footer, null);
+        todayItems.addFooterView(v);
+
+        //Add listener to button:
+        addListenerOnButton(stTime, v);
+
         todayItems.setAdapter(adapter);
+    }
+
+    public void addListenerOnButton(long day, View v) {
+
+        final long d = day;
+
+        final ImageButton imageButton = (ImageButton) v.findViewById(R.id.imageButton);
+
+        imageButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View arg0) {
+
+                Calendar beginTime = Calendar.getInstance();
+                beginTime.setTimeInMillis(d);
+                //beginTime.set(2014, Calendar.NOVEMBER, 19, 7, 30); //change to day selected without specific time
+                Calendar endTime;
+                endTime = beginTime;
+                endTime.add(Calendar.HOUR, 1);
+                //endTime.set(2014, Calendar.NOVEMBER, 19, 8, 30); //change to day selected without specific time
+                Intent intent = new Intent(Intent.ACTION_INSERT)
+                        .setData(CalendarContract.Events.CONTENT_URI)
+                        .putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, beginTime.getTimeInMillis())
+                        .putExtra(CalendarContract.EXTRA_EVENT_END_TIME, endTime.getTimeInMillis());
+                        //.putExtra(CalendarContract.Events.TITLE, "Yoga")
+                        //.putExtra(CalendarContract.Events.DESCRIPTION, "Group class")
+                        //.putExtra(CalendarContract.Events.EVENT_LOCATION, "The gym")
+                        //.putExtra(CalendarContract.Events.AVAILABILITY, CalendarContract.Events.AVAILABILITY_BUSY)
+                        //.putExtra(Intent.EXTRA_EMAIL, "rowan@example.com,trevor@example.com");
+                startActivity(intent);
+            }
+
+        });
+
     }
 
     public void dayLabels(){
@@ -290,7 +334,7 @@ public class CalView extends Activity {
             }
 
             //Call displayEvent function, to print the revised list of event objects to the appropriate section of the screen
-            displayEvent(findMeStrings[y],eventObjectList,layoutIdentifier[y]);
+            displayEvent(findMeStrings[y],eventObjectList,layoutIdentifier[y],stTime);
 
             //Debug print out:
             if (debugSwitch) {
