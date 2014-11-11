@@ -73,15 +73,18 @@ public class EventDisplayAdapter extends BaseAdapter {
                 holder.time.setText("All Day");
             }
             holder.time.setTextSize(8);
+            //holder.time.setTextColor(ColorStateList.valueOf(R.color.white));
         }
         if (mRowLayout.equals("row_layout")) {
             if (event.getDescription() != null) {
                 holder.description.setText(event.getDescription());
                 holder.description.setTextSize(8);
+                //holder.description.setTextColor(ColorStateList.valueOf(R.color.white));
             }
         }
 
         holder.title.setTextSize(15);
+        //holder.title.setTextColor(ColorStateList.valueOf(R.color.white));
 
         if (mRowLayout.equals("row_layout3")) {
             holder.title.setTextSize(12);

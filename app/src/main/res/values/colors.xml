@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="red">#F44336</color>
+    <color name="purple">#673AB7</color>
+    <color name="indigo">#3F51B5</color>
+    <color name="indigodark">#1A237E</color>
+    <color name="indigolight">#C5CAE9</color>
+    <color name="indigoA700">#304FFE</color>
+    <color name="indigoA400">#3D5AFE</color>
+    <color name="indigoA200">#536DFE</color>
+    <color name="indigoA100">#8C9EFF</color>
+    <color name="amber">#FFC107</color>
+    <color name="blue">#2196F3</color>
+    <color name="lightblue">#03A9F4</color>
+    <color name="cyan">#00BCD4</color>
+    <color name="black">#000000</color>
+    <color name="white">#FFFFFF</color>
+</resources>

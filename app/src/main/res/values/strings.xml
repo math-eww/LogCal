@@ -8,7 +8,7 @@
     <string name="today">TODAY</string>
     <string name="tom">TOMORROW</string>
     //Colour options
-    <string-array name="colour-options">
+    <string-array name="colour_options">
         <item>Red/Purple</item>
         <item>Blue/Orange</item>
         <item>Cyan/Yellow</item>

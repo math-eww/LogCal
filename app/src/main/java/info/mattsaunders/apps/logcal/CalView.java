@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import java.text.ParseException;
@@ -16,7 +17,7 @@ import java.util.List;
 
 public class CalView extends Activity {
 
-    boolean debugSwitch = true;
+    boolean debugSwitch = false;
 
     SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss a");
 
@@ -28,6 +29,16 @@ public class CalView extends Activity {
             "day5Items",
             "day6Items",
             "day7Items"     };
+
+    String[] dayTitles = {
+            "today",
+            "tomorrow",
+            "dayThree",
+            "dayFour",
+            "dayFive",
+            "daySix",
+            "daySeven"
+    };
 
     String[] layoutIdentifier = {
             "row_layout",
@@ -296,6 +307,41 @@ public class CalView extends Activity {
         }
     }
 
+    public void changeColours() {
+
+        for (String day : dayTitles) {
+            int resID = getResources().getIdentifier(day,"id", getPackageName());
+            TextView text;
+            text=(TextView) findViewById(resID);
+            text.setBackgroundResource(R.color.indigoA700);
+            text.setTextColor(getResources().getColor(R.color.white));
+        }
+
+        LinearLayout topLayout;
+        topLayout = (LinearLayout) findViewById(R.id.linearLayoutTop);
+        topLayout.setBackgroundResource(R.color.indigodark);
+
+         /*
+         //This looks strange, probably not worthwhile
+        for (String day : findMeStrings) {
+            int resID = getResources().getIdentifier(day,"id", getPackageName());
+            ListView dayItems;
+            dayItems = (ListView) findViewById(resID);
+            dayItems.setBackgroundResource(R.color.indigodark);
+
+            //this doesn't work...
+            System.out.println(dayItems.getChildCount());
+            for (int i = 0; i < dayItems.getChildCount(); i++) {
+                View view = dayItems.getChildAt(i);
+                System.out.println("VIEW CHILD:");
+                System.out.println(view.getId());
+                //text.setTextColor(getResources().getColor(R.color.amber));
+            }
+
+        }
+        */
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -303,6 +349,7 @@ public class CalView extends Activity {
         setContentView(R.layout.activity_cal_view);
 
         refreshInfo();
+        changeColours();
     }
 
     @Override
@@ -323,6 +370,7 @@ public class CalView extends Activity {
         tempEventObjectList.clear();
 
         refreshInfo();
+        changeColours();
 
     }
 
