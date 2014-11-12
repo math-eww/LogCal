@@ -24,7 +24,7 @@ import java.util.List;
 
 public class CalView extends Activity {
 
-    boolean debugSwitch = true;
+    boolean debugSwitch = false;
 
     SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss a");
 
@@ -436,6 +436,8 @@ public class CalView extends Activity {
 
         refreshInfo();
         changeColours();
+
+
 
     }
 

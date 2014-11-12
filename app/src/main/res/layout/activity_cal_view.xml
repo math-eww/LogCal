@@ -25,7 +25,9 @@
         <ListView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/todayItems" />
+            android:id="@+id/todayItems"
+            android:divider="@color/listdivider"
+            android:dividerHeight="4px" />
 
     </LinearLayout>
 
@@ -55,7 +57,9 @@
             <ListView
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/tomorrowItems" />
+                android:id="@+id/tomorrowItems"
+                android:divider="@color/listdivider"
+                android:dividerHeight="4px" />
         </LinearLayout>
 
         <LinearLayout
@@ -76,7 +80,9 @@
             <ListView
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/day3Items" />
+                android:id="@+id/day3Items"
+                android:dividerHeight="4px"
+                android:divider="@color/listdivider" />
         </LinearLayout>
 
     </LinearLayout>
@@ -106,7 +112,9 @@
             <ListView
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/day4Items" />
+                android:id="@+id/day4Items"
+                android:divider="@color/listdivider"
+                android:dividerHeight="4px" />
         </LinearLayout>
 
         <LinearLayout
@@ -128,7 +136,9 @@
             <ListView
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/day5Items" />
+                android:id="@+id/day5Items"
+                android:divider="@color/listdivider"
+                android:dividerHeight="4px" />
         </LinearLayout>
 
         <LinearLayout
@@ -150,7 +160,9 @@
             <ListView
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/day6Items" />
+                android:id="@+id/day6Items"
+                android:divider="@color/listdivider"
+                android:dividerHeight="4px" />
         </LinearLayout>
 
         <LinearLayout
@@ -172,7 +184,9 @@
             <ListView
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/day7Items" />
+                android:id="@+id/day7Items"
+                android:divider="@color/listdivider"
+                android:dividerHeight="4px" />
         </LinearLayout>
     </LinearLayout>
 

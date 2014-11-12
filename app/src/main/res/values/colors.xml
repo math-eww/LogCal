@@ -15,4 +15,5 @@
     <color name="cyan">#00BCD4</color>
     <color name="black">#000000</color>
     <color name="white">#FFFFFF</color>
+    <color name="listdivider">#673AB7</color>
 </resources>
