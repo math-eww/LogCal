@@ -136,10 +136,10 @@ public class CalView extends Activity {
 
         EventDisplayAdapter adapter = new EventDisplayAdapter(this, eventObjList, layoutID);
 
+        //Make each event object in list clickable
         todayItems.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                //List<Event> e = EventDisplayAdapter.mEvents;
                 long eventID = Long.valueOf(eventObjList.get(position).getEventID());
                 Uri uri = ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, eventID);
                 Intent intent = new Intent(Intent.ACTION_EDIT)
@@ -149,7 +149,7 @@ public class CalView extends Activity {
         });
 
 
-        //Add button
+        //Add plus button at end of list to allow users to create new events through calendar intent
         View v = getLayoutInflater().inflate(R.layout.add_event_footer, null);
         todayItems.addFooterView(v);
 
@@ -172,6 +172,7 @@ public class CalView extends Activity {
 
                 Calendar beginTime = Calendar.getInstance();
                 beginTime.setTimeInMillis(d);
+                beginTime.add(Calendar.HOUR, 7);
                 //beginTime.set(2014, Calendar.NOVEMBER, 19, 7, 30); //change to day selected without specific time
                 Calendar endTime;
                 endTime = beginTime;
