@@ -90,8 +90,6 @@ public class EventDisplayAdapter extends BaseAdapter {
             holder.title.setTextSize(12);
         }
 
-
-
         return view;
     }
 

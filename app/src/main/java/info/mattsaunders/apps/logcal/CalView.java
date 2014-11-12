@@ -1,13 +1,16 @@
 package info.mattsaunders.apps.logcal;
 
 import android.app.Activity;
+import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.CalendarContract;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -21,7 +24,7 @@ import java.util.List;
 
 public class CalView extends Activity {
 
-    boolean debugSwitch = false;
+    boolean debugSwitch = true;
 
     SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss a");
 
@@ -60,6 +63,7 @@ public class CalView extends Activity {
     ArrayList<String> endDate;
     ArrayList<String> descr;
     ArrayList<Integer> allDayBool;
+    ArrayList<String> eventID;
 
     ArrayList<Event> eventObjectList;
     ArrayList<Event> tempEventObjectList = new ArrayList<Event>();
@@ -103,7 +107,7 @@ public class CalView extends Activity {
         return d;
     }
 
-    public ArrayList<Event> buildEventList (long stTime,long enTime, ArrayList<String> eventList, ArrayList<String> descr, ArrayList<String> startDate, ArrayList<String> endDate, ArrayList<Integer> allDay,List<Long> startDateD) {
+    public ArrayList<Event> buildEventList (long stTime,long enTime, ArrayList<String> eventList, ArrayList<String> descr, ArrayList<String> startDate, ArrayList<String> endDate, ArrayList<Integer> allDay,List<Long> startDateD, ArrayList<String> eventID) {
         int i = 0;
         List<Integer> index = new ArrayList<Integer>();
         for (long dateTime : startDateD) {
@@ -118,20 +122,34 @@ public class CalView extends Activity {
         for (int ind : index) {
             //System.out.println(eventList.get(ind));
             if (descr.get(ind) == null) {s = "";} else {s = descr.get(ind);} //Fixed NullPointerException when accessing description field ------may be unnecessary
-            Event tempEvent = new Event(eventList.get(ind),s,startDate.get(ind),endDate.get(ind),allDay.get(ind));
+            Event tempEvent = new Event(eventList.get(ind),s,startDate.get(ind),endDate.get(ind),allDay.get(ind),eventID.get(ind));
             eventObjList.add(tempEvent);
             i++;
         }
         return eventObjList;
     }
 
-    public void displayEvent(String findView,ArrayList<Event> eventObjList, String layoutID, long stTime) {
+    public void displayEvent(String findView, final ArrayList<Event> eventObjList, String layoutID, long stTime) {
         int resID = getResources().getIdentifier(findView,
                 "id", getPackageName());
         ListView todayItems = (ListView) findViewById(resID);
 
         EventDisplayAdapter adapter = new EventDisplayAdapter(this, eventObjList, layoutID);
 
+        todayItems.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                //List<Event> e = EventDisplayAdapter.mEvents;
+                long eventID = Long.valueOf(eventObjList.get(position).getEventID());
+                Uri uri = ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, eventID);
+                Intent intent = new Intent(Intent.ACTION_EDIT)
+                        .setData(uri);
+                startActivity(intent);
+            }
+        });
+
+
+        //Add button
         View v = getLayoutInflater().inflate(R.layout.add_event_footer, null);
         todayItems.addFooterView(v);
 
@@ -163,11 +181,11 @@ public class CalView extends Activity {
                         .setData(CalendarContract.Events.CONTENT_URI)
                         .putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, beginTime.getTimeInMillis())
                         .putExtra(CalendarContract.EXTRA_EVENT_END_TIME, endTime.getTimeInMillis());
-                        //.putExtra(CalendarContract.Events.TITLE, "Yoga")
-                        //.putExtra(CalendarContract.Events.DESCRIPTION, "Group class")
-                        //.putExtra(CalendarContract.Events.EVENT_LOCATION, "The gym")
-                        //.putExtra(CalendarContract.Events.AVAILABILITY, CalendarContract.Events.AVAILABILITY_BUSY)
-                        //.putExtra(Intent.EXTRA_EMAIL, "rowan@example.com,trevor@example.com");
+                //.putExtra(CalendarContract.Events.TITLE, "Yoga")
+                //.putExtra(CalendarContract.Events.DESCRIPTION, "Group class")
+                //.putExtra(CalendarContract.Events.EVENT_LOCATION, "The gym")
+                //.putExtra(CalendarContract.Events.AVAILABILITY, CalendarContract.Events.AVAILABILITY_BUSY)
+                //.putExtra(Intent.EXTRA_EMAIL, "rowan@example.com,trevor@example.com");
                 startActivity(intent);
             }
 
@@ -267,6 +285,7 @@ public class CalView extends Activity {
         endDate = Utility.endDates;
         descr = Utility.descriptions;
         allDayBool = Utility.allDayBool;
+        eventID = Utility.eventID;
 
         //Build list of dates as milliseconds so we can compare with current/desired times, and see if we should display items
         List<Long> startDateD = new ArrayList<Long>();
@@ -292,7 +311,7 @@ public class CalView extends Activity {
         //For loop to go through each day, and set the appropriate events to display
         for( int y=0;y<7; y++ ) {
             //Build list of Event objects that fall within day
-            eventObjectList = buildEventList(stTime, enTime, eventList, descr, startDate, endDate, allDayBool,startDateD);
+            eventObjectList = buildEventList(stTime, enTime, eventList, descr, startDate, endDate, allDayBool,startDateD,eventID);
 
             // If there are items in the temp event storage (used to move all day events to proper day), add them to main storage, and then clear temp storage
             if (tempEventObjectList.size() > 0) {
@@ -320,6 +339,7 @@ public class CalView extends Activity {
                         System.out.println(eObj.getEndDate());
                         System.out.println(eObj.getDescription());
                         System.out.println(eObj.checkAllDay());
+                        System.out.println(eObj.getEventID());
                     } catch (Exception e) {
                         System.out.println("FAILED::::: PRINTING FROM OBJECT LIST");
                         e.printStackTrace();
@@ -432,9 +452,6 @@ public class CalView extends Activity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
+        return id == R.id.action_settings || super.onOptionsItemSelected(item);
     }
 }

@@ -17,13 +17,14 @@ public class Utility {
     public static ArrayList<String> endDates = new ArrayList<String>();
     public static ArrayList<String> descriptions = new ArrayList<String>();
     public static ArrayList<Integer> allDayBool = new ArrayList<Integer>();
+    public static ArrayList<String> eventID = new ArrayList<String>();
 
     public static ArrayList<String> readCalendarEvent(Context context) {
         Cursor cursor = context.getContentResolver()
                 .query(
                         Uri.parse("content://com.android.calendar/events"),
                         new String[]{"calendar_id", "title", "description",
-                                "dtstart", "dtend", "eventLocation","allDay"}, null,
+                                "dtstart", "dtend", "eventLocation","allDay","_id"}, null,
                         null, null);
         cursor.moveToFirst();
         // fetching calendars name
@@ -34,6 +35,9 @@ public class Utility {
         startDates.clear();
         endDates.clear();
         descriptions.clear();
+        allDayBool.clear();
+        eventID.clear();
+
         for (int i = 0; i < CNames.length; i++) {
 
             nameOfEvent.add(cursor.getString(1));
@@ -45,6 +49,7 @@ public class Utility {
             }
             descriptions.add(cursor.getString(2));
             allDayBool.add(cursor.getInt(6));
+            eventID.add(cursor.getString(7));
             CNames[i] = cursor.getString(1);
             cursor.moveToNext();
 
