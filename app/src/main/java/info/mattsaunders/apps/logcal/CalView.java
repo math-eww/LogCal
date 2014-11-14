@@ -24,11 +24,11 @@ import java.util.List;
 
 public class CalView extends Activity {
 
-    boolean debugSwitch = false;
+    static final boolean debugSwitch = false;
 
-    SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss a");
+    static final SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss a");
 
-    String[] findMeStrings = {
+    static final String[] findMeStrings = {
             "todayItems",
             "tomorrowItems",
             "day3Items",
@@ -37,7 +37,7 @@ public class CalView extends Activity {
             "day6Items",
             "day7Items"     };
 
-    String[] dayTitles = {
+    static final String[] dayTitles = {
             "today",
             "tomorrow",
             "dayThree",
@@ -47,7 +47,7 @@ public class CalView extends Activity {
             "daySeven"
     };
 
-    String[] layoutIdentifier = {
+    static final String[] layoutIdentifier = {
             "row_layout",
             "row_layout2",
             "row_layout2",
@@ -56,7 +56,7 @@ public class CalView extends Activity {
             "row_layout3",
             "row_layout3"   };
 
-    String[] bottomButtonIdentifier = {
+    static final String[] bottomButtonIdentifier = {
             "imageButtonBottom",
             "imageButtonBottom2",
             "imageButtonBottom3",
@@ -77,7 +77,7 @@ public class CalView extends Activity {
     ArrayList<Event> eventObjectList;
     ArrayList<Event> tempEventObjectList = new ArrayList<Event>();
 
-    static final int PICK_CONTACT_REQUEST = 1;
+    //static final int PICK_CONTACT_REQUEST = 1;
 
     public Date getEndOfDay(Date date) {
         Calendar calendar = Calendar.getInstance();
@@ -140,7 +140,7 @@ public class CalView extends Activity {
     }
 
     public void displayEvent(String findView, final ArrayList<Event> eventObjList, String layoutID, long stTime, String findButton) {
-        int resID = getResources().getIdentifier(findView,
+        final int resID = getResources().getIdentifier(findView,
                 "id", getPackageName());
         final ListView todayItems = (ListView) findViewById(resID);
 
@@ -154,7 +154,9 @@ public class CalView extends Activity {
                 Uri uri = ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, eventID);
                 Intent intent = new Intent(Intent.ACTION_VIEW)
                         .setData(uri);
-                startActivityForResult(intent,PICK_CONTACT_REQUEST);
+
+                //startActivityForResult(intent,PICK_CONTACT_REQUEST);
+                startActivity(intent);
             }
         });
 
@@ -222,7 +224,9 @@ public class CalView extends Activity {
                 //.putExtra(CalendarContract.Events.EVENT_LOCATION, "The gym")
                 //.putExtra(CalendarContract.Events.AVAILABILITY, CalendarContract.Events.AVAILABILITY_BUSY)
                 //.putExtra(Intent.EXTRA_EMAIL, "rowan@example.com,trevor@example.com");
-                startActivityForResult(intent,PICK_CONTACT_REQUEST);
+
+                //startActivityForResult(intent,PICK_CONTACT_REQUEST);
+                startActivity(intent);
             }
 
         });
@@ -255,7 +259,9 @@ public class CalView extends Activity {
                 //.putExtra(CalendarContract.Events.EVENT_LOCATION, "The gym")
                 //.putExtra(CalendarContract.Events.AVAILABILITY, CalendarContract.Events.AVAILABILITY_BUSY)
                 //.putExtra(Intent.EXTRA_EMAIL, "rowan@example.com,trevor@example.com");
-                startActivityForResult(intent,PICK_CONTACT_REQUEST);
+
+                //startActivityForResult(intent,PICK_CONTACT_REQUEST);
+                startActivity(intent);
             }
 
         });
@@ -509,6 +515,7 @@ public class CalView extends Activity {
 
     }
 
+    /*
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         // Check which request we're responding to
@@ -524,6 +531,7 @@ public class CalView extends Activity {
             //}
         //}
     }
+    */
 
 
     @Override
