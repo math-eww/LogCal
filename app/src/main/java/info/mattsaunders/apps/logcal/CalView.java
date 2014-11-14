@@ -56,6 +56,15 @@ public class CalView extends Activity {
             "row_layout3",
             "row_layout3"   };
 
+    String[] bottomButtonIdentifier = {
+            "imageButtonBottom",
+            "imageButtonBottom2",
+            "imageButtonBottom3",
+            "imageButtonBottom4",
+            "imageButtonBottom5",
+            "imageButtonBottom6",
+            "imageButtonBottom7"   };
+
     Context context;
 
     ArrayList<String> eventList;
@@ -130,12 +139,12 @@ public class CalView extends Activity {
         return eventObjList;
     }
 
-    public void displayEvent(String findView, final ArrayList<Event> eventObjList, String layoutID, long stTime) {
+    public void displayEvent(String findView, final ArrayList<Event> eventObjList, String layoutID, long stTime, String findButton) {
         int resID = getResources().getIdentifier(findView,
                 "id", getPackageName());
-        ListView todayItems = (ListView) findViewById(resID);
+        final ListView todayItems = (ListView) findViewById(resID);
 
-        EventDisplayAdapter adapter = new EventDisplayAdapter(this, eventObjList, layoutID);
+        final EventDisplayAdapter adapter = new EventDisplayAdapter(this, eventObjList, layoutID);
 
         //Make each event object in list clickable and bring user to the details of the event (also able to edit from this view, as opposed to action_edit)
         todayItems.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -149,15 +158,40 @@ public class CalView extends Activity {
             }
         });
 
+        todayItems.setAdapter(adapter);
+
+        //find view of bottom button for current day
+        final int resID2 = getResources().getIdentifier(findButton, "id", getPackageName());
+        final ImageButton imageButtonBottom = (ImageButton) findViewById(resID2);
+        final long stTime2 = stTime;
+        //Determine whether list is long enough that some events are not displayed
+
+        todayItems.post(new Runnable() {
+            public void run() {
+                int numItemsVisible = todayItems.getLastVisiblePosition() - todayItems.getFirstVisiblePosition();
+                System.out.println("LAST VISIBLE POSITION: " + todayItems.getLastVisiblePosition() + " FIRST VISIBLE POSITION: " + todayItems.getFirstVisiblePosition());
+                System.out.println("NUMBER OF ITEMS VISIBLE: " + numItemsVisible + " TOTAL NUMBER OF ITEMS: " + adapter.getCount());
+                if (adapter.getCount() - 1 > numItemsVisible) {
+                    // set your footer on the ListView
+                    View v = getLayoutInflater().inflate(R.layout.add_event_footer, null);
+                    todayItems.addFooterView(v);
+
+                    //turn off bottom button
+                    imageButtonBottom.setVisibility(View.INVISIBLE);
+
+                    //Add listener to button:
+                    addListenerOnButton(stTime2, v);
+                } else {
+                    imageButtonBottom.setVisibility(View.VISIBLE);
+                    addListenerOnBottomButton(stTime2, imageButtonBottom);
+                }
+            }
+        });
 
         //Add plus button at end of list to allow users to create new events through calendar intent
-        View v = getLayoutInflater().inflate(R.layout.add_event_footer, null);
-        todayItems.addFooterView(v);
 
-        //Add listener to button:
-        addListenerOnButton(stTime, v);
 
-        todayItems.setAdapter(adapter);
+
     }
 
     public void addListenerOnButton(long day, View v) {
@@ -167,6 +201,39 @@ public class CalView extends Activity {
         final ImageButton imageButton = (ImageButton) v.findViewById(R.id.imageButton);
 
         imageButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View arg0) {
+
+                Calendar beginTime = Calendar.getInstance();
+                beginTime.setTimeInMillis(d);
+                beginTime.add(Calendar.HOUR, 7);
+                //beginTime.set(2014, Calendar.NOVEMBER, 19, 7, 30); //change to day selected without specific time
+                Calendar endTime;
+                endTime = beginTime;
+                endTime.add(Calendar.HOUR, 1);
+                //endTime.set(2014, Calendar.NOVEMBER, 19, 8, 30); //change to day selected without specific time
+                Intent intent = new Intent(Intent.ACTION_INSERT)
+                        .setData(CalendarContract.Events.CONTENT_URI)
+                        .putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, beginTime.getTimeInMillis())
+                        .putExtra(CalendarContract.EXTRA_EVENT_END_TIME, endTime.getTimeInMillis());
+                //.putExtra(CalendarContract.Events.TITLE, "Yoga")
+                //.putExtra(CalendarContract.Events.DESCRIPTION, "Group class")
+                //.putExtra(CalendarContract.Events.EVENT_LOCATION, "The gym")
+                //.putExtra(CalendarContract.Events.AVAILABILITY, CalendarContract.Events.AVAILABILITY_BUSY)
+                //.putExtra(Intent.EXTRA_EMAIL, "rowan@example.com,trevor@example.com");
+                startActivityForResult(intent,PICK_CONTACT_REQUEST);
+            }
+
+        });
+
+    }
+
+    public void addListenerOnBottomButton(long day, ImageButton imgBut) {
+
+        final long d = day;
+
+        imgBut.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View arg0) {
@@ -356,7 +423,7 @@ public class CalView extends Activity {
             }
 
             //Call displayEvent function, to print the revised list of event objects to the appropriate section of the screen
-            displayEvent(findMeStrings[y],eventObjectList,layoutIdentifier[y],stTime);
+            displayEvent(findMeStrings[y],eventObjectList,layoutIdentifier[y],stTime, bottomButtonIdentifier[y]);
 
             //Debug print out:
             if (debugSwitch) {
