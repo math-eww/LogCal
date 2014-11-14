@@ -68,6 +68,7 @@ public class CalView extends Activity {
     ArrayList<Event> eventObjectList;
     ArrayList<Event> tempEventObjectList = new ArrayList<Event>();
 
+    static final int PICK_CONTACT_REQUEST = 1;
 
     public Date getEndOfDay(Date date) {
         Calendar calendar = Calendar.getInstance();
@@ -136,15 +137,15 @@ public class CalView extends Activity {
 
         EventDisplayAdapter adapter = new EventDisplayAdapter(this, eventObjList, layoutID);
 
-        //Make each event object in list clickable
+        //Make each event object in list clickable and bring user to the details of the event (also able to edit from this view, as opposed to action_edit)
         todayItems.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 long eventID = Long.valueOf(eventObjList.get(position).getEventID());
                 Uri uri = ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, eventID);
-                Intent intent = new Intent(Intent.ACTION_EDIT)
+                Intent intent = new Intent(Intent.ACTION_VIEW)
                         .setData(uri);
-                startActivity(intent);
+                startActivityForResult(intent,PICK_CONTACT_REQUEST);
             }
         });
 
@@ -187,7 +188,7 @@ public class CalView extends Activity {
                 //.putExtra(CalendarContract.Events.EVENT_LOCATION, "The gym")
                 //.putExtra(CalendarContract.Events.AVAILABILITY, CalendarContract.Events.AVAILABILITY_BUSY)
                 //.putExtra(Intent.EXTRA_EMAIL, "rowan@example.com,trevor@example.com");
-                startActivity(intent);
+                startActivityForResult(intent,PICK_CONTACT_REQUEST);
             }
 
         });
@@ -439,6 +440,22 @@ public class CalView extends Activity {
 
 
 
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // Check which request we're responding to
+        //if (requestCode == PICK_CONTACT_REQUEST) {
+            // Make sure the request was successful
+            //if (resultCode == RESULT_OK) {
+                // The user picked a contact.
+                // The Intent's data Uri identifies which contact was selected.
+                refreshInfo();
+                changeColours();
+
+                // Do something with the contact here (bigger example below)
+            //}
+        //}
     }
 
 

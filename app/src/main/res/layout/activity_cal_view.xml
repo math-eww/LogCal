@@ -20,7 +20,8 @@
             android:id="@+id/today"
             android:layout_gravity="center_horizontal"
             android:textAlignment="center"
-            android:gravity="center_horizontal" />
+            android:gravity="center_horizontal"
+            android:elevation="25dp" />
 
         <ListView
             android:layout_width="fill_parent"
@@ -52,7 +53,8 @@
                 android:text="@string/tom"
                 android:id="@+id/tomorrow"
                 android:textAlignment="center"
-                android:gravity="center_horizontal" />
+                android:gravity="center_horizontal"
+                android:elevation="25dp" />
 
             <ListView
                 android:layout_width="fill_parent"
@@ -75,7 +77,8 @@
                 android:text="DAY THREE"
                 android:id="@+id/dayThree"
                 android:textAlignment="center"
-                android:gravity="center_horizontal" />
+                android:gravity="center_horizontal"
+                android:elevation="25dp" />
 
             <ListView
                 android:layout_width="fill_parent"
@@ -107,7 +110,8 @@
                 android:text="DAY FOUR"
                 android:id="@+id/dayFour"
                 android:textAlignment="center"
-                android:gravity="center_horizontal" />
+                android:gravity="center_horizontal"
+                android:elevation="25dp" />
 
             <ListView
                 android:layout_width="fill_parent"
@@ -131,7 +135,8 @@
                 android:text="DAY FIVE"
                 android:id="@+id/dayFive"
                 android:textAlignment="center"
-                android:gravity="center_horizontal" />
+                android:gravity="center_horizontal"
+                android:elevation="25dp" />
 
             <ListView
                 android:layout_width="fill_parent"
@@ -155,7 +160,8 @@
                 android:text="DAY SIX"
                 android:id="@+id/daySix"
                 android:textAlignment="center"
-                android:gravity="center_horizontal" />
+                android:gravity="center_horizontal"
+                android:elevation="25dp" />
 
             <ListView
                 android:layout_width="fill_parent"
@@ -179,7 +185,8 @@
                 android:text="DAY SEVEN"
                 android:id="@+id/daySeven"
                 android:textAlignment="center"
-                android:gravity="center_horizontal" />
+                android:gravity="center_horizontal"
+                android:elevation="25dp" />
 
             <ListView
                 android:layout_width="fill_parent"
