@@ -10,7 +10,7 @@ The idea was for the calendar to be 'logarithmic', and not depend on breakdowns 
 
 ### What is this repository for? ###
 
-If you're just getting into development, this app shows the basics of both displaying information, layouts, and using an API to gather info.  If you'd like to expand on my work here, just let me know and you'll be free to do so.
+If you're just getting into development, this app shows the basics of both displaying information, layouts, and using an API to gather info.  If you'd like to expand on my work here, feel free to do so, just follow the GPL 3.0 License agreement.
 
 ### How do I get set up? ###
 
@@ -18,8 +18,18 @@ Android studio project, so download and plop it in.  You'll need API level 15 or
 
 ### Contribution guidelines ###
 
-Get in touch!
+Get in touch! Make a pull request!
 
 ### Who do I talk to? ###
 
 Matt Saunders, repo owner.
+
+## Project Status
+
+Haven't looked at this in years now.  I've decided to open source the entire project in hopes that others will be able to help contribute.  
+### How Can I Help?
+I'm sure the app code could use some updates, and some beautifying. Feel free to contribute by updating the app code itself.  Pull requests are welcome :).
+
+## License
+
+The software is licensed under the GPL license. See the LICENSE file for full copyright and license text. Any modifications to or software including GPL-licensed code must also be made available under the GPL.
